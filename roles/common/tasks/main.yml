@@ -1,0 +1,32 @@
+---
+
+- name: Update apt cache
+  become: yes
+  apt: update-cache=yes
+  tags: common
+
+- name: Install base packages
+  become: yes
+  become_user: root
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - vim
+    - curl
+    - git
+    - htop
+    - composer
+    - python-pip
+    - mysql-client
+    - build-essential
+    - awscli
+    - ruby
+
+
+- name: Install global python requirements packages
+  become: yes
+  become_user: root
+  pip: name={{ item }} state=latest
+  with_items:
+    - boto3
+    - botocore
+    - boto

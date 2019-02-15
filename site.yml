@@ -1,7 +1,8 @@
 ---
-hosts: all
+- hosts: all
   roles:
-  - prometheus
+    - common
+    - prometheus
   vars:
     prometheus_targets:
       node:
