@@ -1,5 +1,5 @@
 ---
-hosts: "{{ target_hosts }}"
+hosts: all
   roles:
   - prometheus
   vars:
