@@ -1,7 +1,7 @@
 ---
 prometheus_version: 2.7.1
 #ansible_architecture: amd64
-ansible_processor_count: 1
+
 #prometheus_checksum: 7837cfd6b5af63c07cadfa2b3118f0a43e43e8a6e6d596425cb23b45855b7db0
 prometheus_config_dir: /etc/prometheus
 prometheus_db_dir: /var/lib/prometheus
