@@ -14,5 +14,6 @@
       node:
       - targets:
         - localhost:9100
+        - ec2-3-80-147-43.compute-1.amazonaws.com:9100
         labels:
           env: test
