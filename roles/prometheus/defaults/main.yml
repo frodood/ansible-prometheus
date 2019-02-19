@@ -1,7 +1,7 @@
 ---
 prometheus_version: 2.7.1
-architecture: amd64
-prometheus_checksum: 7837cfd6b5af63c07cadfa2b3118f0a43e43e8a6e6d596425cb23b45855b7db0
+#architecture: amd64
+#prometheus_checksum: 7837cfd6b5af63c07cadfa2b3118f0a43e43e8a6e6d596425cb23b45855b7db0
 prometheus_config_dir: /etc/prometheus
 prometheus_db_dir: /var/lib/prometheus
 
@@ -49,7 +49,7 @@ prometheus_targets: {}
 
 prometheus_scrape_configs:
   - job_name: "prometheus"
-    metrics_path: "/metrics"
+    metrics_path: "{{ prometheus_metrics_path }}"
     static_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
@@ -60,44 +60,3 @@ prometheus_scrape_configs:
 
 # Alternative config file name, searched in ansible templates path.
 prometheus_config_file: 'prometheus.yml.j2'
-
-prometheus_alert_rules:
-  - alert: InstanceDown
-    expr: "up == 0"
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}"
-      summary: "{% raw %}Instance {{ $labels.instance }} down{% endraw %}"
-  - alert: CriticalCPULoad
-    expr: '100 - (avg by (instance) (irate(node_cpu_seconds_total{job="node",mode="idle"}[5m])) * 100) > 96'
-    for: 2m
-    labels:
-      severity: critical
-    annotations:
-      description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
-      summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
-  - alert: CriticalRAMUsage
-    expr: '(1 - ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100 > 98'
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
-      summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage{% endraw %}"
-  - alert: CriticalDiskSpace
-    expr: 'node_filesystem_free_bytes{job="node",filesystem!~"^/run(/|$)"} / node_filesystem_size_bytes{job="node"} < 0.1'
-    for: 4m
-    labels:
-      severity: critical
-    annotations:
-      description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has less than 10% space remaining.{% endraw %}"
-      summary: "{% raw %}Instance {{ $labels.instance }} - Critical disk space usage{% endraw %}"
-  - alert: RebootRequired
-    expr: "node_reboot_required > 0"
-    labels:
-      severity: warning
-    annotations:
-      description: "{% raw %}{{ $labels.instance }} requires a reboot.{% endraw %}"
-      summary: "{% raw %}Instance {{ $labels.instance }} - reboot required{% endraw %}"
