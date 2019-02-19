@@ -32,6 +32,8 @@ prometheus_alert_relabel_configs: []
 #   - action: labeldrop
 #     regex: replica
 
+prometheus_remote_write: []
+prometheus_remote_read: []
 prometheus_global:
   scrape_interval: 15s
   scrape_timeout: 10s
